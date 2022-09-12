@@ -1,6 +1,6 @@
 # define new project
 PROJECT(mv-lm-icp)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
 
 option(WITH_G2O "Compile with G2O support if found" ON)
 
@@ -37,13 +37,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 
 MESSAGE("---------------GLFW-------------------")
-SET(BUILD_SHARED_LIBS OFF) # Set static build for GLFW
-SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-SET(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-SET(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-ADD_SUBDIRECTORY(ext/glfw)
-SET(BUILD_SHARED_LIBS ON) # Set shared lib build for the rest
-INCLUDE_DIRECTORIES(ext/glfw/include)
+FIND_PACKAGE(glfw3 REQUIRED)
 
 MESSAGE("---------------Sophus-------------------")
 # use lovegroves version of sophus with ceres extensions!

@@ -27,15 +27,18 @@
 using namespace std;
 
 DEFINE_bool(pointToPlane, true, "use point to plane distance metric");
-DEFINE_bool(sophusSE3, true, ""); DEFINE_bool(sophusSE3_autodiff, false, "");
+DEFINE_bool(sophusSE3, true, ""); 
 DEFINE_bool(angleAxis, false, "");
+DEFINE_bool(sophusSE3_autodiff, false, "");
+
 
 DEFINE_bool(g2o, false, "use g2o");
 DEFINE_double(cutoff, 0.05, "dmax/cutoff distance after which we prune correspondences"); //dmax
 DEFINE_int32(knn, 2, "number of knn nearest neigbhours to build up the graph");
 
 //DEFINE_string(dir, "../samples/dinosaur", "dir");
-DEFINE_string(dir, "../samples/Bunny_RealData", "dir");
+//DEFINE_string(dir, "../samples/Bunny_RealData", "dir");
+DEFINE_string(dir, "../samples/PolyWorks", "dir");
 
 DEFINE_double(sigma, 0.02, "rotation noise variance");
 DEFINE_double(sigmat, 0.01, "translation noise variance");
@@ -71,13 +74,15 @@ static void loadFrames(vector< std::shared_ptr<Frame> >& frames, std::string dir
 			f->poseGroundTruth = Isometry3d(loadMatrix4d(groundtruth[i]));
 		}
 		else {
-			f->poseGroundTruth = Isometry3d(loadMatrix4d(poses[i]));
+			//f->poseGroundTruth = Isometry3d(loadMatrix4d(poses[i]));
 			//            double sigma = 0.02;
-			if (i == 0) {
+			/*if (i == 0) 
+			{
 				f->pose = f->poseGroundTruth;
 			}
-			else {
-				f->pose = addNoise(f->poseGroundTruth, FLAGS_sigma, FLAGS_sigmat);
+			else */
+			{
+				f->pose = Isometry3d(loadMatrix4d(poses[i]));
 			}
 		}
 

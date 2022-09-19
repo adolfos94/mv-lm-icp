@@ -57,8 +57,8 @@ public:
     int ingoingEdgeFrame=255;
 
     //const static int WINDOW_SIZE = 800;
-    const static int WINDOW_WIDTH = 768;//1024;
-    const static int WINDOW_HEIGHT = 768;
+    const static int WINDOW_WIDTH = 1280;//1024;
+    const static int WINDOW_HEIGHT = 720;
 
 private:
     int refPtIdx=0;

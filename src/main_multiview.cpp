@@ -27,10 +27,9 @@
 using namespace std;
 
 DEFINE_bool(pointToPlane, true, "use point to plane distance metric");
-DEFINE_bool(sophusSE3, true, ""); 
+DEFINE_bool(sophusSE3, true, "");
 DEFINE_bool(angleAxis, false, "");
 DEFINE_bool(sophusSE3_autodiff, false, "");
-
 
 DEFINE_bool(g2o, false, "use g2o");
 DEFINE_double(cutoff, 0.05, "dmax/cutoff distance after which we prune correspondences"); //dmax
@@ -51,7 +50,8 @@ DEFINE_bool(recomputeNormals, true, "weather to recompute normals using PCA of 1
 
 DEFINE_bool(robust, true, "robust loss function. Currently uses the SoftL1Loss with scaling parameter set to 1.5*median of point correspondance distances");
 
-static void loadFrames(vector< std::shared_ptr<Frame> >& frames, std::string dir, bool demean) {
+static void loadFrames(vector< std::shared_ptr<Frame> >& frames, std::string dir, bool demean)
+{
 	vector<string> clouds = getAllTextFilesFromFolder(dir, "cloud");
 	vector<string> poses = getAllTextFilesFromFolder(dir, "pose");
 	vector<string> groundtruth = getAllTextFilesFromFolder(dir, "groundtruth");
@@ -76,7 +76,7 @@ static void loadFrames(vector< std::shared_ptr<Frame> >& frames, std::string dir
 		else {
 			//f->poseGroundTruth = Isometry3d(loadMatrix4d(poses[i]));
 			//            double sigma = 0.02;
-			/*if (i == 0) 
+			/*if (i == 0)
 			{
 				f->pose = f->poseGroundTruth;
 			}
@@ -100,14 +100,20 @@ static void loadFrames(vector< std::shared_ptr<Frame> >& frames, std::string dir
 	}
 }
 
-namespace ApproachComponents {
-	static void computePoseNeighbours(vector< std::shared_ptr<Frame> >& frames, int knn) {
+namespace ApproachComponents
+{
+	static void computePoseNeighbours(vector< std::shared_ptr<Frame> >& frames, int knn)
+	{
 		//compute closest points
 		MatrixXi adjacencyMatrix = MatrixXi::Zero(frames.size(), frames.size());
-		for (int src_id = 0; src_id < frames.size(); src_id++) {
+
+		for (int src_id = 0; src_id < frames.size(); src_id++)
+		{
 			Frame& srcCloud = *frames[src_id];
 			srcCloud.computePoseNeighboursKnn(&frames, src_id, knn);
-			for (int j = 0; j < srcCloud.neighbours.size(); j++) {
+
+			for (int j = 0; j < srcCloud.neighbours.size(); j++)
+			{
 				adjacencyMatrix(src_id, srcCloud.neighbours[j].neighbourIdx) = 1;
 			}
 			//        srcCloud.computeClosestPointsToNeighbours(&frames,cutoff);
@@ -116,9 +122,11 @@ namespace ApproachComponents {
 		cout << adjacencyMatrix << endl;
 	}
 
-	static void computeClosestPoints(vector< std::shared_ptr<Frame> >& frames, float cutoff) {
+	static void computeClosestPoints(vector< std::shared_ptr<Frame> >& frames, float cutoff)
+	{
 		//compute closest points
-		for (int src_id = 0; src_id < frames.size(); src_id++) {
+		for (int src_id = 0; src_id < frames.size(); src_id++)
+		{
 			Frame& srcCloud = *frames[src_id];
 			//        srcCloud.computePoseNeighboursKnn(&frames,src_id,knn);
 			cout << "cloud " << src_id << endl;
@@ -128,16 +136,18 @@ namespace ApproachComponents {
 }//end ns
 
 int main() {
-	
 	vector< std::shared_ptr<Frame> > frames;
 
 	CPUTimer timer = CPUTimer();
 
+	// 1. Acquirese 3D Point Clouds and Camera poses.
 	loadFrames(frames, FLAGS_dir, true);
 
 	Visualize::setClouds(&frames);
 
 	frames[0]->fixed = true;
+
+	// 2. Compute Pose Neighbours
 	ApproachComponents::computePoseNeighbours(frames, FLAGS_knn);
 
 	cout << "press q to start optimization" << endl;
